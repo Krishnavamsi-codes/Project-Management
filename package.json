@@ -1,0 +1,22 @@
+{
+  "name": "projectmanagement",
+  "version": "1.0.0",
+  "description": "A Project Management Application",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "keywords": [
+    "Udemy",
+    "course",
+    "backend",
+    "api",
+    "creation"
+  ],
+  "author": "Krishnavamsi",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "3.8.1"
+  }
+}
