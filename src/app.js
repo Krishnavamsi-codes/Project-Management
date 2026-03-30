@@ -16,6 +16,24 @@ app.use(cors({
     methods:["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
     allowedHeaders:["Content-Type","Authorization"]
 }))
+
+
+// 🔁 How it combines
+
+// When you do:
+
+// app.use("/api/v1/healthcheck", healthcheckrouter);
+
+// 👉 Express combines paths like this:
+
+// Base path        +   Router path
+// /api/v1/healthcheck + /
+
+// 👉 Final route becomes:
+
+// /api/v1/healthcheck/
+import  healthcheckrouter  from "./routes/healthcheck.routes.js";
+app.use("/api/v1/healthcheck",healthcheckrouter)
 app.get("/", (req, res) => {
     res.send("Welcome to homepage");
 });
