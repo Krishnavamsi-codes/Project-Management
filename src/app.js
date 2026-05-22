@@ -41,4 +41,7 @@ app.get("/", (req, res) => {
 app.get("/instagram", (req, res) => {
     res.send("This is an instagram page");
 });
+
+import authrouter from "./routes/auth.routes.js"
+app.use("/api/v1/auth",authrouter)
 export default app;

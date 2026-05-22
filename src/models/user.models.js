@@ -1,5 +1,5 @@
 import mongoose,{Schema} from "mongoose"
-import bcrypt from "bcrpyt"
+import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import crypto from "crypto";
 
@@ -31,7 +31,7 @@ const userSchema=new Schema({
     },
     fullname:{
         type:String,
-        required:true,
+        trim:true
     },
     password:{
         type:String,
@@ -62,17 +62,20 @@ const userSchema=new Schema({
 
 
 //but now if i make only like changes on maybe like fullname or email then also the alrdy hashed password will get hashed again so we need to stop it because if we attach the pre hook only to save then suppose we change like username then save will run but then without changing the password it is getting encrpyted again
-userSchema.pre('save',async function (next) {
-    if(!this.isModified(this.password)) return next();
-    this.password=await bcrypt.hash(this.password,10)
-    next()
+userSchema.pre('save', async function() {
+
+    if(!this.isModified("password"))
+        return;
+
+    this.password = await bcrypt.hash(this.password, 10);
+
     
 })
 userSchema.methods.isPasswordCorrect=async function(password) {
     return await bcrypt.compare(password,this.password)
     
 }
-export const User=mongoose.model("User",userSchema)//"User gets conerted to user anyways"
+
 
 
 userSchema.methods.generateAccessToken=function() {
@@ -104,3 +107,4 @@ userSchema.methods.generateTemporaryToken=function(){
     return {unhashedtoken,hashedtoken,tokenexpiry}
     }
 
+export const User=mongoose.model("User",userSchema)//"User gets conerted to user anyways"
