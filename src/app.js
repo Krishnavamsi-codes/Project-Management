@@ -33,7 +33,7 @@ app.use(cors({
 
 // /api/v1/healthcheck/
 import  healthcheckrouter  from "./routes/healthcheck.routes.js";
-app.use("/api/v1/healthcheck",healthcheckrouter)
+app.use("/api/v1/healthcheck",healthcheckrouter) //app.use if used for all get post put patch and all other requests we need to be able to check healtho f the api always so here app/get is used
 app.get("/", (req, res) => {
     res.send("Welcome to homepage");
 });

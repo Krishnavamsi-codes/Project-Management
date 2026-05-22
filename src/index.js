@@ -13,7 +13,7 @@ connectDB()
         app.listen(port, () => {
             console.log(`Example app listening on port http://localhost:${port}`);
         });
-    })
+    })//server will now listen only after the connection to db has been successfully achieved
     .catch((err) => {
         console.error("MongoDB connection error", err);
         process.exit(1);

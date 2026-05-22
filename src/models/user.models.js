@@ -61,10 +61,11 @@ const userSchema=new Schema({
 })
 
 
-//but now if i make only like changes on maybe like fullname or email then also the alrdy hashed password will get hashed again so we need to stop it
+//but now if i make only like changes on maybe like fullname or email then also the alrdy hashed password will get hashed again so we need to stop it because if we attach the pre hook only to save then suppose we change like username then save will run but then without changing the password it is getting encrpyted again
 userSchema.pre('save',async function (next) {
     if(!this.isModified(this.password)) return next();
     this.password=await bcrypt.hash(this.password,10)
+    next()
     
 })
 userSchema.methods.isPasswordCorrect=async function(password) {
