@@ -24,4 +24,4 @@ const userRegisterValidator=()=>{
 
     ]
 }
-export default {userRegisterValidator};
+export {userRegisterValidator};

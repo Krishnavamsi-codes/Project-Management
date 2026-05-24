@@ -44,4 +44,13 @@ app.get("/instagram", (req, res) => {
 
 import authrouter from "./routes/auth.routes.js"
 app.use("/api/v1/auth",authrouter)
+app.use((err,req,res,next)=>{
+
+    return res.status(err.statusCode || 500).json({
+        success:false,
+        message:err.message,
+        errors:err.errors || {}
+    })
+})
+
 export default app;
