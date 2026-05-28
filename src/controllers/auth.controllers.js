@@ -3,6 +3,7 @@ import { ApiResponse } from "../utils/api-response.js"
 import { ApiError } from "../utils/api-error.js"
 import { asynchandler } from "../utils/async-handler.js"
 import { emailVerificationMailgenContent, sendEmail } from "../utils/mail.js"
+import { verifyJWT } from "../middlewares/auth.middleware.js"
 
 //we keep generate access and refresh token separately and not inside register user because this can be used again fo rlogin or signup
 const generateAccessandRefreshTokens = async (userId) => {
@@ -136,5 +137,77 @@ const registeruser = asynchandler(async (req, res) => {
         )
     }
 })
+const loginuser=asynchandler(async(req,res)=>{
+    const {email,password}=req.body
 
-export {registeruser};
+    if(!email)
+    {
+        throw new ApiError(400,"Email is required")
+    }
+    const user=await User.findOne({email})
+    if(!user)
+    {
+        throw new ApiError(400,"User doesnt exist")
+    }
+
+    const isenteredpasswordcorecct=await user.isPasswordCorrect(password)
+    if(!isenteredpasswordcorecct)
+        throw new ApiError(400,"Invalid Password entered")
+    
+
+    const {accesstoken,refreshtoken}=await generateAccessandRefreshTokens(user._id)
+    const loggedinUser = await User.findById(user._id).select(
+            "-password -refreshtoken -emailVerificationToken -emailVerificationExpiry"
+        )
+
+    const options={
+        httpOnly:true,
+        secure:false
+    }
+    return res.status(200)
+    .cookie("accesstoken",accesstoken,options)
+    .cookie("refreshtoken",refreshtoken,options)
+    .json(
+        new ApiResponse(
+            200,
+            {
+                user:loggedinUser,
+                accesstoken,
+                refreshtoken,
+            },
+            "User logged in successfully"
+        )
+    )
+})
+
+
+
+//in verifyjwt at the end we kept req.user=user so we appended smth to the request
+//so we can directly access the user in the request and in that we can take the user id and then update
+const logoutuser=asynchandler(async(req,res,next)=>
+{
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set:{
+                refreshtoken:""
+            }
+        },
+        {
+            new:true,
+        },
+
+    )
+ const options={
+    httpOnly:true,
+    secure:false
+ }
+ return res
+ .status(200)
+ .clearCookie("accesstoken",options)
+ .clearCookie("refreshtoken",options)
+ .json(
+    new ApiResponse(200,"","User Logged out successfully")
+ )
+})
+export {registeruser,loginuser,logoutuser};

@@ -1,5 +1,6 @@
 import express from "express"
 import cors from "cors"
+import cookieParser from "cookie-parser";
 const app=express();
 
 //server returns response or error and error part alrdy is like given for implementation by node so we do the response stuff
@@ -16,7 +17,7 @@ app.use(cors({
     methods:["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
     allowedHeaders:["Content-Type","Authorization"]
 }))
-
+app.use(cookieParser())
 
 // 🔁 How it combines
 

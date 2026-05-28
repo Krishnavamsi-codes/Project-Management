@@ -73,6 +73,7 @@ userSchema.pre('save', async function() {
 })
 userSchema.methods.isPasswordCorrect=async function(password) {
     return await bcrypt.compare(password,this.password)
+    // bcrypt.compare() hashes the entered password internally using the stored hash's salt and checks whether both hashes match.
     
 }
 
