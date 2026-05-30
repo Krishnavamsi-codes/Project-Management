@@ -102,7 +102,7 @@ userSchema.methods.generateRefreshToken=function() {
 userSchema.methods.generateTemporaryToken=function(){
     const unhashedtoken=crypto.randomBytes(20).toString("hex")
 
-    const hashedtoken=crypto.createHash("sha512").update(unhashedtoken).digest("hex")
+    const hashedtoken=crypto.createHash("sha256").update(unhashedtoken).digest("hex")
 
     const tokenexpiry=Date.now()+(20*60*1000) //this is 20 minutes
     return {unhashedtoken,hashedtoken,tokenexpiry}
