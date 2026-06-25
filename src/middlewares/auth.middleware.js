@@ -10,6 +10,7 @@ import { User } from "../models/user.models.js";
 import { ApiError } from "../utils/api-error.js";
 import { asynchandler } from "../utils/async-handler.js";
 import jwt from "jsonwebtoken";
+import { ProjectMember } from "../models/projectmember.models.js";
 
 export const verifyJWT=asynchandler(async(req,res,next)=>
 {
@@ -49,3 +50,30 @@ export const verifyJWT=asynchandler(async(req,res,next)=>
     }
 
 })
+
+export const validateProjectPermission=(roles=[])=>{
+    asynchandler(async(req,res,next)=>
+    {
+        const {projectid}=req.params
+        if(!projectid){
+            throw new ApiError(400,"Project id is missing")
+        }
+
+        const project=await ProjectMember.findOne({
+            project:new mongoose.Types.ObjectId(projectid),
+            user:new mongoose.Types.ObjectId(req.user._id)
+        })
+          if(project){
+            throw new ApiError(400,"Projec is missing")
+        }
+
+
+        const givenrole=project?.role
+
+        req.user.role=givenrole
+        if(!roles.includes(givenrole))
+            throw new ApiError(404,"You dont have permission to perform this specific action")
+    }
+)
+}
+

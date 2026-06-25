@@ -54,4 +54,19 @@ const userforgotpasswordvalidator=()=>{
 const userresetforgotpasswordvalidator=()=>{
         return[body("newpassword").notEmpty().withMessage("Password is required")]
 }
-export {userRegisterValidator,userLoginValidator,userchangecurrentpasswordvalidator,userforgotpasswordvalidator,userresetforgotpasswordvalidator};
+
+const crreateprojectvalidator=()=>{
+    return [
+        body("name").notEmpty().withMessage("Name is required"),
+        body("description").optional()
+    ]
+}
+import { AvailableUserRole } from "../utils/constants.js"
+const addmemberstoprojectvalidator()=>
+{
+    return [
+        body("email").trim().notEmpty().withMessage("Email field cannot be empty").isEmail().withMessage("Invalid Email @"),
+        body("role").notEmpty().withMessage("Role is required").isIn(AvailableUserRole).withMessage("Role is INVALID")
+    ]
+}
+export {userRegisterValidator,userLoginValidator,userchangecurrentpasswordvalidator,userforgotpasswordvalidator,userresetforgotpasswordvalidator,crreateprojectvalidator,addmemberstoprojectvalidator};
